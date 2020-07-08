@@ -1,6 +1,16 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="Performer___PDF" mva:VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="1057.14285714286,1922.85714285714" sap2010:WorkflowViewState.IdRef="Performer___PDF_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="Performer___PDF" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:njl="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="EmployeeItem" Type="InOutArgument(ui:QueueItem)" />
+    <x:Property Name="Config_in" Type="InArgument(njl:JArray)" />
+    <x:Property Name="FilePath" Type="InArgument(x:String)" />
+  </x:Members>
+  <mva:VisualBasic.Settings>
+    <x:Null />
+  </mva:VisualBasic.Settings>
+  <sap:VirtualizedContainerService.HintSize>1057.14285714286,1922.85714285714</sap:VirtualizedContainerService.HintSize>
+  <sap2010:WorkflowViewState.IdRef>Performer___PDF_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
-    <scg:List x:TypeArguments="x:String" Capacity="23">
+    <scg:List x:TypeArguments="x:String" Capacity="46">
       <x:String>System.Activities</x:String>
       <x:String>System.Activities.Statements</x:String>
       <x:String>System.Activities.Expressions</x:String>
@@ -24,10 +34,11 @@
       <x:String>System.Windows.Markup</x:String>
       <x:String>UiPath.Excel</x:String>
       <x:String>System.Xml.Serialization</x:String>
+      <x:String>Newtonsoft.Json.Linq</x:String>
     </scg:List>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
-    <scg:List x:TypeArguments="AssemblyReference" Capacity="17">
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="34">
       <AssemblyReference>System.Activities</AssemblyReference>
       <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
       <AssemblyReference>mscorlib</AssemblyReference>
@@ -45,11 +56,11 @@
       <AssemblyReference>UiPath.System.Activities</AssemblyReference>
       <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
       <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
+      <AssemblyReference>Newtonsoft.Json</AssemblyReference>
     </scg:List>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Performer___PDF" sap:VirtualizedContainerService.HintSize="846.285714285714,1757.71428571429" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="Performer___PDF" sap:VirtualizedContainerService.HintSize="846.285714285714,2513.71428571429" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
-      <Variable x:TypeArguments="ui:QueueItem" Name="EmployeeItem" />
       <Variable x:TypeArguments="sd:DataTable" Name="EmployeeDT" />
       <Variable x:TypeArguments="x:Int32" Name="RowIndex">
         <Variable.Default>
@@ -57,13 +68,14 @@
         </Variable.Default>
       </Variable>
       <Variable x:TypeArguments="x:Int32" Name="HoursWorked" />
+      <Variable x:TypeArguments="x:String" Name="EmailVar" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <ui:ExcelApplicationScope Password="{x:Null}" DisplayName="Excel Application Scope" sap:VirtualizedContainerService.HintSize="804,258.285714285714" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" WorkbookPath="C:\Users\moadm\OneDrive\Documents\QA Files\RPA\Group Project - Payroll\Employee table.xlsx">
+    <ui:ExcelApplicationScope Password="{x:Null}" DisplayName="Excel Application Scope" sap:VirtualizedContainerService.HintSize="804,258.285714285714" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" WorkbookPath="[FilePath]">
       <ui:ExcelApplicationScope.Body>
         <ActivityAction x:TypeArguments="ui:WorkbookApplication">
           <ActivityAction.Argument>
@@ -86,58 +98,71 @@
         </ActivityAction>
       </ui:ExcelApplicationScope.Body>
     </ui:ExcelApplicationScope>
-    <ui:GetQueueItem ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" DisplayName="Get Transaction Item" sap:VirtualizedContainerService.HintSize="804,21.7142857142857" sap2010:WorkflowViewState.IdRef="GetQueueItem_1" QueueType="Hours Worked" TransactionItem="[EmployeeItem]" />
-    <If Condition="[EmployeeItem isNot Nothing]" sap:VirtualizedContainerService.HintSize="804,1306.28571428571" sap2010:WorkflowViewState.IdRef="If_2">
+    <If Condition="[EmployeeItem isNot Nothing]" sap:VirtualizedContainerService.HintSize="804,2124" sap2010:WorkflowViewState.IdRef="If_2">
       <If.Then>
-        <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="658.285714285714,1152.57142857143" sap2010:WorkflowViewState.IdRef="TryCatch_1">
-          <TryCatch.Variables>
-            <Variable x:TypeArguments="x:String" Name="Email" />
-          </TryCatch.Variables>
+        <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="658.285714285714,1970.28571428571" sap2010:WorkflowViewState.IdRef="TryCatch_1">
           <TryCatch.Try>
-            <Sequence sap:VirtualizedContainerService.HintSize="619.428571428571,914.285714285714" sap2010:WorkflowViewState.IdRef="Sequence_4">
+            <Sequence sap:VirtualizedContainerService.HintSize="619.428571428571,1732" sap2010:WorkflowViewState.IdRef="Sequence_4">
               <sap:WorkflowViewStateService.ViewState>
                 <scg:Dictionary x:TypeArguments="x:String, x:Object">
                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                 </scg:Dictionary>
               </sap:WorkflowViewStateService.ViewState>
-              <Assign sap:VirtualizedContainerService.HintSize="577.142857142857,61.1428571428571" sap2010:WorkflowViewState.IdRef="Assign_1">
-                <Assign.To>
-                  <OutArgument x:TypeArguments="x:String">[Email]</OutArgument>
-                </Assign.To>
-                <Assign.Value>
-                  <InArgument x:TypeArguments="x:String">[EmployeeItem.SpecificContent("Employee_Hour").ToString]</InArgument>
-                </Assign.Value>
-              </Assign>
-              <Assign sap:VirtualizedContainerService.HintSize="577.142857142857,61.1428571428571" sap2010:WorkflowViewState.IdRef="Assign_2">
-                <Assign.To>
-                  <OutArgument x:TypeArguments="x:Int32">[HoursWorked]</OutArgument>
-                </Assign.To>
-                <Assign.Value>
-                  <InArgument x:TypeArguments="x:Int32">[CInt(EmployeeItem.SpecificContent("Employee_Email"))]</InArgument>
-                </Assign.Value>
-              </Assign>
-              <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[EmployeeDT]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="577.142857142857,457.714285714286" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+              <Sequence sap:VirtualizedContainerService.HintSize="577.142857142857,459.428571428571" sap2010:WorkflowViewState.IdRef="Sequence_8">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <Assign sap:VirtualizedContainerService.HintSize="261.714285714286,61.1428571428571" sap2010:WorkflowViewState.IdRef="Assign_1">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[EmailVar]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[EmployeeItem.SpecificContent("Employee_Email").ToString]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="261.714285714286,62.8571428571429" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[EmailVar]" />
+                <Assign sap:VirtualizedContainerService.HintSize="261.714285714286,61.1428571428571" sap2010:WorkflowViewState.IdRef="Assign_2">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:Int32">[HoursWorked]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:Int32">[CInt(EmployeeItem.SpecificContent("Employee_Hours"))]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="261.714285714286,62.8571428571429" sap2010:WorkflowViewState.IdRef="WriteLine_2" Text="[HoursWorked.ToString]" />
+              </Sequence>
+              <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[EmployeeDT]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="577.142857142857,652" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
                 <ui:ForEachRow.Body>
                   <ActivityAction x:TypeArguments="sd:DataRow">
                     <ActivityAction.Argument>
                       <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
                     </ActivityAction.Argument>
-                    <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="526.857142857143,306.285714285714" sap2010:WorkflowViewState.IdRef="Sequence_3">
+                    <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="526.857142857143,500.571428571429" sap2010:WorkflowViewState.IdRef="Sequence_3">
                       <sap:WorkflowViewStateService.ViewState>
                         <scg:Dictionary x:TypeArguments="x:String, x:Object">
                           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                         </scg:Dictionary>
                       </sap:WorkflowViewStateService.ViewState>
-                      <If Condition="[row(&quot;Email Address&quot;).Equals(Email)]" sap:VirtualizedContainerService.HintSize="484.571428571429,214.857142857143" sap2010:WorkflowViewState.IdRef="If_1">
+                      <If Condition="[row(&quot;Email&quot;).Equals(EmailVar)]" sap:VirtualizedContainerService.HintSize="484.571428571429,409.142857142857" sap2010:WorkflowViewState.IdRef="If_1">
                         <If.Then>
-                          <Assign sap:VirtualizedContainerService.HintSize="261.714285714286,61.1428571428571" sap2010:WorkflowViewState.IdRef="Assign_3">
-                            <Assign.To>
-                              <OutArgument x:TypeArguments="x:Int32">[RowIndex]</OutArgument>
-                            </Assign.To>
-                            <Assign.Value>
-                              <InArgument x:TypeArguments="x:Int32">[EmployeeDT.Rows.IndexOf(row)]</InArgument>
-                            </Assign.Value>
-                          </Assign>
+                          <Sequence sap:VirtualizedContainerService.HintSize="304,255.428571428571" sap2010:WorkflowViewState.IdRef="Sequence_7">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <Assign sap:VirtualizedContainerService.HintSize="261.714285714286,61.1428571428571" sap2010:WorkflowViewState.IdRef="Assign_3">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:Int32">[RowIndex]</OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:Int32">[EmployeeDT.Rows.IndexOf(row)]</InArgument>
+                              </Assign.Value>
+                            </Assign>
+                            <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="261.714285714286,62.8571428571429" sap2010:WorkflowViewState.IdRef="WriteLine_3" Text="[RowIndex.ToString]" />
+                          </Sequence>
                         </If.Then>
                       </If>
                     </Sequence>
@@ -152,6 +177,23 @@
                   <InArgument x:TypeArguments="x:Object">[HoursWorked]</InArgument>
                 </Assign.Value>
               </Assign>
+              <ui:ExcelApplicationScope Password="{x:Null}" DisplayName="Excel Application Scope" sap:VirtualizedContainerService.HintSize="577.142857142857,286.285714285714" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_2" WorkbookPath="[FilePath]">
+                <ui:ExcelApplicationScope.Body>
+                  <ActivityAction x:TypeArguments="ui:WorkbookApplication">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbookScope" />
+                    </ActivityAction.Argument>
+                    <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="376.571428571429,177.714285714286" sap2010:WorkflowViewState.IdRef="Sequence_5">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <ui:ExcelWriteRange AddHeaders="True" DataTable="[EmployeeDT]" DisplayName="Write Range" sap:VirtualizedContainerService.HintSize="334.285714285714,86.2857142857143" sap2010:WorkflowViewState.IdRef="ExcelWriteRange_1" SheetName="Sheet1" StartingCell="A1" />
+                    </Sequence>
+                  </ActivityAction>
+                </ui:ExcelApplicationScope.Body>
+              </ui:ExcelApplicationScope>
               <ui:SetTransactionStatus ContinueOnError="{x:Null}" Reason="{x:Null}" ServiceBaseAddress="{x:Null}" TimeoutMS="{x:Null}" DisplayName="Set Transaction Status" ErrorType="Business" sap:VirtualizedContainerService.HintSize="577.142857142857,21.7142857142857" sap2010:WorkflowViewState.IdRef="SetTransactionStatus_1" Status="Successful" TransactionItem="[EmployeeItem]">
                 <ui:SetTransactionStatus.Analytics>
                   <scg:Dictionary x:TypeArguments="x:String, InArgument" />
