@@ -1,0 +1,11 @@
+[
+
+{
+"pdf_folder":"C:\\Users\\moadm\\OneDrive\\Documents\\UiPath\\Contractor Invoice Manager\\PDF Attachments",
+
+"employee_database":"C:\\Users\\moadm\\OneDrive\\Documents\\QA Files\\RPA\\Group Project - Payroll\\Employee table.xlsx"
+
+}
+
+
+]
